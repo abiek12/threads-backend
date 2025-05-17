@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
+import { expressMiddleware } from '@as-integrations/express5';
 
 async function init() {
     const app = express();
@@ -9,6 +9,8 @@ async function init() {
 
     // Middleware
     app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    // CORS configuration
     const corsOptions = {
         origin: '*', // Allow all origins
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
@@ -33,11 +35,13 @@ async function init() {
     // Start the gql server
     await gqlServer.start();
 
+    app.use('/graphql', cors(corsOptions), express.json(), expressMiddleware(gqlServer) as express.Express);
+
+    // Health check endpoint
     app.get('/', (req, res) => {
         res.send('Express server is running!');
     });
 
-    app.use('/graphql', expressMiddleware(gqlServer) as express.Express);
     app.listen(PORT, () => {
         console.log(`Server is running on ${PORT}`);
     });
