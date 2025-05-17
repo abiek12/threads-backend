@@ -19,8 +19,15 @@ async function init() {
 
     // Create graphql server
     const gqlServer = new ApolloServer({
-        typeDefs: "",
-        resolvers: {},
+        typeDefs: `
+            type Query {
+                hello: String
+            }`,
+        resolvers: {
+            Query: {
+                hello: () => 'Hey there! Iam your GraphQL server.',
+            },
+        },
     })
 
     // Start the gql server
@@ -31,7 +38,6 @@ async function init() {
     });
 
     app.use('/graphql', expressMiddleware(gqlServer) as express.Express);
-
     app.listen(PORT, () => {
         console.log(`Server is running on ${PORT}`);
     });
