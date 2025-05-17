@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@as-integrations/express5';
 import { ILogger, WinstonLogger } from './utils/logger';
+import createApolloGraphqlServer from './graphql';
 
 async function init() {
     const app = express();
@@ -21,24 +21,8 @@ async function init() {
     };
     app.use(cors(corsOptions));
 
-    // Create graphql server
-    const gqlServer = new ApolloServer({
-        typeDefs: `
-            type Query {
-                hello: String,
-                say(name: String!): String
-            }`,
-        resolvers: {
-            Query: {
-                hello: () => 'Hey there! Iam your GraphQL server.',
-                say: (_: any, { name }: { name: string }) => `Hello ${name}!, How are you?`,
-            },
-        },
-    })
-
-    // Start the gql server
-    await gqlServer.start();
-
+    // creating graphql server
+    const gqlServer = await createApolloGraphqlServer();
     app.use('/graphql', cors(corsOptions), express.json(), expressMiddleware(gqlServer) as express.Express);
 
     // Health check endpoint
