@@ -1,4 +1,5 @@
 import { ApolloServer } from "@apollo/server";
+import { User } from './user';
 
 const createApolloGraphqlServer = async () => {
     try {
@@ -7,13 +8,22 @@ const createApolloGraphqlServer = async () => {
             typeDefs: `
             type Query {
                 hello: String,
-                say(name: String!): String
-            }`,
+                ${User.queries}
+            }
+            type Mutation {
+                say(name: String!): String,
+                ${User.mutations}
+            }
+                `,
             resolvers: {
                 Query: {
                     hello: () => 'Hey there! Iam your GraphQL server.',
-                    say: (_: any, { name }: { name: string }) => `Hello ${name}!, How are you?`,
+                    ...User.resolvers.queries
                 },
+                Mutation: {
+                    say: (_: any, { name }: { name: string }) => `Hello ${name}!, How are you?`,
+                    ...User.resolvers.mutations
+                }
             },
         })
 
