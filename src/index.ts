@@ -2,9 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@as-integrations/express5';
+import { ILogger, WinstonLogger } from './utils/logger';
 
 async function init() {
     const app = express();
+    const logger: ILogger = new WinstonLogger();
     const PORT = process.env.PORT || 3000;
 
     // Middleware
@@ -45,7 +47,7 @@ async function init() {
     });
 
     app.listen(PORT, () => {
-        console.log(`Server is running on ${PORT}`);
+        logger.info(`Server is running on ${PORT}`);
     });
 }
 

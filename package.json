@@ -28,6 +28,7 @@
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
     "@types/node": "^22.15.18",
+    "@types/winston": "^2.4.4",
     "prisma": "^6.8.2",
     "tsc-watch": "^6.2.1",
     "tsx": "^4.19.4",
@@ -40,6 +41,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "graphql": "^16.11.0"
+    "graphql": "^16.11.0",
+    "winston": "^3.17.0"
   }
 }
