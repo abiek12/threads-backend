@@ -22,9 +22,13 @@
     "start:prod": "node dist/index.js"
   },
   "devDependencies": {
+    "@prisma/client": "^6.8.2",
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
+    "@types/node": "^22.15.18",
+    "prisma": "^6.8.2",
     "tsc-watch": "^6.2.1",
+    "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   },
   "dependencies": {
