@@ -1,11 +1,5 @@
 import { Logger } from "winston";
-
-interface createUserPayload {
-    firstName: string,
-    lastName?: string,
-    email: string,
-    password: string
-}
+import { createUserPayload } from "../schemas/interfaces/user.interface";
 
 class UserService {
     constructor(private logger: Logger) { }
