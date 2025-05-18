@@ -1,3 +1,5 @@
+import { Logger } from "winston";
+
 interface createUserPayload {
     firstName: string,
     lastName?: string,
@@ -6,8 +8,15 @@ interface createUserPayload {
 }
 
 class UserService {
-    public static createUser(payload: createUserPayload) {
+    constructor(private logger: Logger) { }
 
+    public createUser(payload: createUserPayload) {
+        try {
+
+        } catch (error) {
+            this.logger.error("Error while creating user!", error);
+            throw error;
+        }
     }
 }
 
