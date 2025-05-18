@@ -3,7 +3,7 @@ import { createLogger, format, transports } from 'winston';
 export interface ILogger {
     info(message: string): void;
     warn(message: string): void;
-    error(message: string): void;
+    error(message: string, error?: unknown): void;
     debug(message: string): void;
 }
 
@@ -28,8 +28,13 @@ export class WinstonLogger implements ILogger {
         this.logger.warn(message);
     }
 
-    error(message: string): void {
-        this.logger.error(message);
+    error(message: string, error?: unknown): void {
+        if (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.error(`${message} ${errorMessage}`);
+        } else {
+            this.logger.error(message);
+        }
     }
 
     debug(message: string): void {
