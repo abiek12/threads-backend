@@ -6,6 +6,7 @@ class UserService {
     constructor(private logger: ILogger) { }
     private async getUserByEmail(email: string) {
         try {
+            console.log("Getting user by email:", email);
             return prisma.user.findUnique({
                 where: { email }
             })
