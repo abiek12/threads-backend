@@ -4,6 +4,7 @@ import { expressMiddleware } from '@as-integrations/express5';
 import { ILogger, WinstonLogger } from './utils/logger';
 import createApolloGraphqlServer from './graphql';
 import { decodeToken } from './middlewares/validate';
+import { createAdminUser } from './utils/common';
 
 async function init() {
     const app = express();
@@ -37,6 +38,9 @@ async function init() {
             }
         }
     }) as express.Express);
+
+    // Admin user creation
+    await createAdminUser()
 
     // Health check endpoint
     app.get('/', (req, res) => {
