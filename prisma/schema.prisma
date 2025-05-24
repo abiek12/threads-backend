@@ -25,7 +25,6 @@ model User {
   email           String    @unique
   profileImageUrl String?   @map("profile_image_url")
   password        String
-  salt            String
   role            UserRoles @default(user)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @default(now())
