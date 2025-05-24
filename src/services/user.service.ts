@@ -21,8 +21,8 @@ class UserService {
 
     private async generateHash(password: string) {
         try {
-            const salt = process.env.SALT || 'qwerty@1qaz';
-            return await bcrypt.hash(password, salt);
+            const saltRounds = process.env.SALT_ROUNDS || '10';
+            return await bcrypt.hash(password, saltRounds);
         } catch (error) {
             this.logger.error("Error while generating hash!", error);
             throw error;
