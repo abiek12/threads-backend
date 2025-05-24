@@ -1,6 +1,6 @@
 import { ZodSchema } from 'zod';
 import { NextFunction, Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 export const validate =
     (schema: ZodSchema<any>, source: 'body' | 'query' | 'params' = 'body') =>
@@ -21,7 +21,7 @@ export const validate =
 export const decodeToken = (token: string) => {
     const jwtSecret = process.env.JWT_SECRET || 'default';
 
-    const decodeToken = bcrypt.compare(token, jwtSecret);
+    const decodeToken = jwt.verify(token, jwtSecret);
     if (!decodeToken) {
         throw new Error('Invalid token');
     }
