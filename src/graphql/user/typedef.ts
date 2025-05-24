@@ -1,12 +1,8 @@
 export const typeDefs = `#graphql
     type UserTokenResponse {
-        user: User!
+        userId: ID!
+        email: String!
         accessToken: String!
         refreshToken: String!
-    }
-
-    type User {
-        id: ID!
-        email: String!
     }
 `
