@@ -59,6 +59,27 @@ class UserService {
         }
     }
 
+    private async getUserById(userId: string) {
+        try {
+            return await prisma.user.findUnique({
+                where: { id: userId },
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    role: true,
+                    profileImageUrl: true,
+                    createdAt: true,
+                    updatedAt: true
+                }
+            })
+        } catch (error) {
+            this.logger.error("Error while fetching user by id!", error);
+            throw error;
+        }
+    }
+
     public async createUser(payload: CreateUserDto) {
         try {
             const { firstName, lastName, email, password } = payload;
@@ -113,6 +134,21 @@ class UserService {
 
         } catch (error) {
             this.logger.error("Error while getting user token!", error);
+            throw error;
+        }
+    }
+
+    public getUserProfile = async (userId: string) => {
+        try {
+            const user = await this.getUserById(userId);
+            if (!user) {
+                this.logger.warn("User not found!");
+                throw new Error('User not found');
+            }
+
+            return user;
+        } catch (error) {
+            this.logger.error("Error while getting user profile!", error);
             throw error;
         }
     }

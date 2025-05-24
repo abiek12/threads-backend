@@ -5,4 +5,15 @@ export const typeDefs = `#graphql
         accessToken: String!
         refreshToken: String!
     }
+
+    type UserProfileResponse {
+        id: ID!
+        firstName: String!
+        lastName: String
+        email: String!
+        role: String!
+        profileImageUrl: String
+        createdAt: String!
+        updatedAt: String!
+    }
 `

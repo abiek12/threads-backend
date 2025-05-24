@@ -3,6 +3,7 @@ import cors from 'cors';
 import { expressMiddleware } from '@as-integrations/express5';
 import { ILogger, WinstonLogger } from './utils/logger';
 import createApolloGraphqlServer from './graphql';
+import { decodeToken } from './middlewares/validate';
 
 async function init() {
     const app = express();
@@ -23,7 +24,19 @@ async function init() {
 
     // creating graphql server
     const gqlServer = await createApolloGraphqlServer();
-    app.use('/graphql', cors(corsOptions), express.json(), expressMiddleware(gqlServer) as express.Express);
+    app.use('/graphql', cors(corsOptions), express.json(), expressMiddleware(gqlServer, {
+        context: async ({ req }) => {
+            // You can add any context you want to pass to your resolvers here
+            const token = req.headers.authorization || '';
+            try {
+                const user = decodeToken(token);
+                return { user };
+            } catch (error) {
+                logger.error("Error while getting token!", error);
+                return { user: null };
+            }
+        }
+    }) as express.Express);
 
     // Health check endpoint
     app.get('/', (req, res) => {

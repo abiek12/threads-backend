@@ -8,6 +8,14 @@ const queries = {
         const userService = new UserService(logger);
         const res = await userService.getUserToken(payload);
         return res;
+    },
+    getUserProfile: async (_: any, params: any, context: any) => {
+        const logger = new WinstonLogger();
+        const userService = new UserService(logger);
+        const userId = context.user.userId;
+
+        const res = await userService.getUserProfile(userId);
+        return res;
     }
 };
 
