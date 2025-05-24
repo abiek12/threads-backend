@@ -41,10 +41,9 @@ class UserService {
     private async createTokens(userId: string, role: string = 'user') {
         try {
             const secretKey = process.env.JWT_SECRET || 'default';
-            const expiresIn = process.env.JWT_EXPIRES_IN || '1h';
 
             const accessToken = jsonwebtoken.sign({ userId, role }, secretKey, {
-                expiresIn: parseInt(expiresIn)
+                expiresIn: '1h' // Access token valid for 1 hour
             });
 
             const refreshToken = jsonwebtoken.sign({ userId, role }, secretKey, {

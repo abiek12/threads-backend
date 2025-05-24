@@ -19,11 +19,18 @@ export const validate =
         };
 
 export const decodeToken = (token: string) => {
-    const jwtSecret = process.env.JWT_SECRET || 'default';
+    try {
+        if (!token || token === '') {
+            return null;
+        }
 
-    const decodeToken = jwt.verify(token, jwtSecret);
-    if (!decodeToken) {
+        const bearerToken = token.startsWith('Bearer ') ? token.split(' ')[1] : token;
+        const jwtSecret = process.env.JWT_SECRET || 'default';
+
+        const decodeToken = jwt.verify(bearerToken, jwtSecret);
+        return decodeToken;
+    } catch (error) {
+        console.error("Error while decoding token!", error);
         throw new Error('Invalid token');
     }
-    return decodeToken;
-}
+}   
