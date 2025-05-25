@@ -215,9 +215,9 @@ class UserService {
                 this.logger.warn("User is not authenticated!");
                 throw new Error('User is not authenticated');
             }
-            if (!context.user?.role || context.user.role !== 'ADMIN') {
-                this.logger.warn("User is not authorized to create a new user!");
-                throw new Error('User is not authorized to create a new user');
+            if (!context.user?.role || context.user.role !== 'admin') {
+                this.logger.warn("User is not authorized to do this action!");
+                throw new Error('User is not authorized to do this action!');
             }
 
             const user = await this.getUserById(id);
