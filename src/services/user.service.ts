@@ -176,7 +176,8 @@ class UserService {
                 this.logger.warn("User is not authenticated!");
                 throw new Error('User is not authenticated');
             }
-            if (!context.user?.role || context.user.role !== 'ADMIN') {
+
+            if (!context.user?.role || context.user.role !== 'admin') {
                 this.logger.warn("User is not authorized to view all users!");
                 throw new Error('User is not authorized to view all users');
             }
@@ -184,6 +185,11 @@ class UserService {
             const users = await prisma.user.findMany({
                 skip: (page - 1) * size,
                 take: size,
+                where: {
+                    role: {
+                        not: 'admin'
+                    }
+                },
                 select: {
                     id: true,
                     firstName: true,
