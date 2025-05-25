@@ -170,6 +170,17 @@ class UserService {
     public getAllUsers = async (args: any, context: any) => {
         try {
             const { size = 10, page = 1 } = args;
+
+            const userId = context.user?.userId;
+            if (!userId) {
+                this.logger.warn("User is not authenticated!");
+                throw new Error('User is not authenticated');
+            }
+            if (!context.user?.role || context.user.role !== 'ADMIN') {
+                this.logger.warn("User is not authorized to view all users!");
+                throw new Error('User is not authorized to view all users');
+            }
+
             const users = await prisma.user.findMany({
                 skip: (page - 1) * size,
                 take: size,
@@ -187,6 +198,30 @@ class UserService {
             return users;
         } catch (error) {
             this.logger.error("Error while getting all users!", error);
+            throw error;
+        }
+    }
+
+    public getUser = async (id: string, context: any) => {
+        try {
+            const userId = context.user?.userId;
+            if (!userId) {
+                this.logger.warn("User is not authenticated!");
+                throw new Error('User is not authenticated');
+            }
+            if (!context.user?.role || context.user.role !== 'ADMIN') {
+                this.logger.warn("User is not authorized to create a new user!");
+                throw new Error('User is not authorized to create a new user');
+            }
+
+            const user = await this.getUserById(id);
+            if (!user) {
+                this.logger.warn("User not found!");
+                throw new Error('User not found');
+            }
+            return user;
+        } catch (error) {
+            this.logger.error("Error while getting user by id!", error);
             throw error;
         }
     }

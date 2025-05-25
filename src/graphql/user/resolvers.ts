@@ -20,16 +20,6 @@ const queries = {
         const logger = new WinstonLogger();
         const userService = new UserService(logger);
 
-        const userId = context.user?.userId;
-        if (!userId) {
-            logger.warn("User is not authenticated!");
-            throw new Error('User is not authenticated');
-        }
-        if (!context.user?.role || context.user.role !== 'ADMIN') {
-            logger.warn("User is not authorized to view all users!");
-            throw new Error('User is not authorized to view all users');
-        }
-
         const res = await userService.getAllUsers(args, context);
         return res;
     },
@@ -45,8 +35,8 @@ const queries = {
 const mutations = {
     createUser: async (parent: any, args: CreateUserDto, context: any) => {
         const logger = new WinstonLogger();
-
         const userService = new UserService(logger);
+
         const res = await userService.createUser(args, context);
         return res;
     }
