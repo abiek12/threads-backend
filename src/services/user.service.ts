@@ -170,6 +170,13 @@ class UserService {
     public getAllUsers = async (args: any, context: any) => {
         try {
             const { size = 10, page = 1 } = args;
+            const redis: Redis = context.redis;
+            // Check if the uses are cached in Redis
+            const cachedUsers = await redis.get(`users:${page}:${size}`);
+            if (cachedUsers) {
+                this.logger.info("Users found in cache, returning cached data.");
+                return JSON.parse(cachedUsers);
+            }
 
             const userId = context.user?.userId;
             if (!userId) {
@@ -201,6 +208,11 @@ class UserService {
                     updatedAt: true
                 }
             });
+
+            // Cache the users in Redis with 5 min expiration
+            redis.set(`users:${page}:${size}`, JSON.stringify(users), 'EX', 300, 'NX');
+            this.logger.info(`Successfully fetched ${users.length} users from the database.`);
+
             return users;
         } catch (error) {
             this.logger.error("Error while getting all users!", error);
