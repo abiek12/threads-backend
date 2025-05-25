@@ -3,13 +3,13 @@ import UserService from "../../services/user.service";
 import { WinstonLogger } from "../../utils/logger";
 
 const queries = {
-    getUserToken: async (_: any, payload: GetUserTokenDto) => {
+    getUserToken: async (parent: any, args: GetUserTokenDto, context: any) => {
         const logger = new WinstonLogger();
         const userService = new UserService(logger);
-        const res = await userService.getUserToken(payload);
+        const res = await userService.getUserToken(args);
         return res;
     },
-    getUserProfile: async (_: any, params: any, context: any) => {
+    getUserProfile: async (parent: any, args: any, context: any) => {
         const logger = new WinstonLogger();
         const userService = new UserService(logger);
         const userId = context.user.userId;
@@ -20,11 +20,11 @@ const queries = {
 };
 
 const mutations = {
-    createUser: async (_: any, payload: CreateUserDto) => {
+    createUser: async (parent: any, args: CreateUserDto, context: any) => {
         const logger = new WinstonLogger();
 
         const userService = new UserService(logger);
-        const res = await userService.createUser(payload);
+        const res = await userService.createUser(args);
         return res;
     }
 };
