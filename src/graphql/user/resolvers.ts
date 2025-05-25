@@ -6,15 +6,14 @@ const queries = {
     getUserToken: async (parent: any, args: GetUserTokenDto, context: any) => {
         const logger = new WinstonLogger();
         const userService = new UserService(logger);
-        const res = await userService.getUserToken(args);
+        const res = await userService.getUserToken(args, context);
         return res;
     },
     getUserProfile: async (parent: any, args: any, context: any) => {
         const logger = new WinstonLogger();
         const userService = new UserService(logger);
-        const userId = context.user.userId;
 
-        const res = await userService.getUserProfile(userId);
+        const res = await userService.getUserProfile(args, context);
         return res;
     }
 };
@@ -24,7 +23,7 @@ const mutations = {
         const logger = new WinstonLogger();
 
         const userService = new UserService(logger);
-        const res = await userService.createUser(args);
+        const res = await userService.createUser(args, context);
         return res;
     }
 };

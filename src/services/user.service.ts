@@ -4,6 +4,7 @@ import { CreateUserDto, GetUserTokenDto } from "../schemas/dto/user.dto";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import jsonwebtoken from "jsonwebtoken";
+import Redis from "ioredis";
 dotenv.config();
 
 class UserService {
@@ -79,7 +80,7 @@ class UserService {
         }
     }
 
-    public async createUser(payload: CreateUserDto) {
+    public async createUser(payload: CreateUserDto, context: any) {
         try {
             const { firstName, lastName, email, password } = payload;
             const existingUser = await this.getUserByEmail(email);
@@ -108,13 +109,21 @@ class UserService {
     }
 
 
-    public async getUserToken(payload: GetUserTokenDto) {
+    public async getUserToken(payload: GetUserTokenDto, context: any) {
+        const { email, password } = payload;
+        const redis: Redis = context.redis;
         try {
-            const { email, password } = payload;
             const user = await this.getUserByEmail(email);
             if (!user) {
                 this.logger.warn("User not found!");
                 throw new Error('User not found');
+            }
+
+            // Check if the user is already in redis
+            const cachedUser = await redis.get(`user:${user.id}`);
+            if (cachedUser) {
+                this.logger.info("User found in cache, returning cached data.");
+                return JSON.parse(cachedUser);
             }
 
             const isPasswordValid = await this.comparePassword(password, user.password);
@@ -124,21 +133,28 @@ class UserService {
             }
 
             const { accessToken, refreshToken } = await this.createTokens(user.id, user.role);
-            return {
+            const res = {
                 userId: user.id,
                 email: user.email,
                 accessToken,
                 refreshToken
             }
-
+            // save to redis with 1 hour expiration
+            redis.set(`user:${user.id}`, JSON.stringify(res), 'EX', 3600, 'NX');
+            return res;
         } catch (error) {
             this.logger.error("Error while getting user token!", error);
             throw error;
         }
     }
 
-    public getUserProfile = async (userId: string) => {
+    public getUserProfile = async (args: any, context: any) => {
         try {
+            const userId = context.user?.userId;
+            if (!userId) {
+                this.logger.warn("User is not authenticated!");
+                throw new Error('User is not authenticated');
+            }
             const user = await this.getUserById(userId);
             if (!user) {
                 this.logger.warn("User not found!");

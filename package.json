@@ -27,6 +27,7 @@
     "@prisma/client": "^6.8.2",
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
+    "@types/ioredis": "^4.28.10",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.21",
     "@types/winston": "^2.4.4",
