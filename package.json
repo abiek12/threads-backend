@@ -28,7 +28,7 @@
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.15.18",
+    "@types/node": "^22.15.21",
     "@types/winston": "^2.4.4",
     "prisma": "^6.8.2",
     "tsc-watch": "^6.2.1",
@@ -44,6 +44,7 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "graphql": "^16.11.0",
+    "ioredis": "^5.6.1",
     "jsonwebtoken": "^9.0.2",
     "winston": "^3.17.0",
     "zod": "^3.24.4"

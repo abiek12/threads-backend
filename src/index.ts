@@ -5,6 +5,7 @@ import { ILogger, WinstonLogger } from './utils/logger';
 import createApolloGraphqlServer from './graphql';
 import { decodeToken } from './middlewares/validate';
 import { createAdminUser } from './utils/common';
+import redisClient from './lib/redis';
 
 async function init() {
     const app = express();
@@ -31,10 +32,15 @@ async function init() {
             const token = req.headers.authorization || '';
             try {
                 const user = decodeToken(token);
-                return { user };
+                return {
+                    user,
+                    redis: redisClient
+                };
             } catch (error) {
                 logger.error("Error while getting token!", error);
                 return { user: null };
+            } finally {
+                logger.info("GraphQL context created successfully");
             }
         }
     }) as express.Express);
