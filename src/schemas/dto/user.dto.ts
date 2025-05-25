@@ -10,7 +10,8 @@ export const createUserSchema = z.object({
 
 export const getUserTokenSchema = z.object({
     email: z.string().email(),
-    password: z.string().min(6).max(100)
+    password: z.string().min(6).max(100),
+    role: z.enum(['USER', 'ADMIN']),
 })
 
 export type CreateUserDto = z.infer<typeof createUserSchema>;

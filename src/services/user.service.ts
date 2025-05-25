@@ -108,9 +108,8 @@ class UserService {
         }
     }
 
-
     public async getUserToken(payload: GetUserTokenDto, context: any) {
-        const { email, password } = payload;
+        const { email, password, role } = payload;
         const redis: Redis = context.redis;
         try {
             const user = await this.getUserByEmail(email);
@@ -164,6 +163,30 @@ class UserService {
             return user;
         } catch (error) {
             this.logger.error("Error while getting user profile!", error);
+            throw error;
+        }
+    }
+
+    public getAllUsers = async (args: any, context: any) => {
+        try {
+            const { size = 10, page = 1 } = args;
+            const users = await prisma.user.findMany({
+                skip: (page - 1) * size,
+                take: size,
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    role: true,
+                    profileImageUrl: true,
+                    createdAt: true,
+                    updatedAt: true
+                }
+            });
+            return users;
+        } catch (error) {
+            this.logger.error("Error while getting all users!", error);
             throw error;
         }
     }
